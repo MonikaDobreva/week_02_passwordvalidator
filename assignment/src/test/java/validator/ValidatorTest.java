@@ -23,5 +23,38 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Pieter van den Hombergh {@code p.vandenhombergh@fontys.nl}
  */
 public class ValidatorTest {
+    private Validator validator;
 
+    @BeforeEach
+    void setUp() {
+        this.validator = new Validator();
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "qwertyu1?, No UPPER case letter",
+            "QWERTY12?, No lower case letter",
+            "QWERTu123, No special character",
+            "qwerT1?, Too short",
+            "QWERTYUi?, No digit"})
+    void invalidPassword(String password, String expected) {
+        SoftAssertions.assertSoftly(softly -> {
+            ThrowingCallable code = () -> {
+                this.validator.validate(password);
+            };
+            assertThatCode(code)
+                    .as("No UPPER case letter")
+                    .isExactlyInstanceOf(InvalidPasswordException.class)
+                    .hasMessageContaining(expected);
+        });
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "qwerytySD12?!",
+            "ahdknc sjskd76?!"
+    })
+    void validPassword(String password) {
+        //assertDoesNotThrow(validator::validate);
+    }
 }
