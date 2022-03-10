@@ -52,9 +52,9 @@ public class ValidatorTest {
     @ParameterizedTest
     @CsvSource({
             "qwerytySD12?!",
-            "ahdknc sjskd76?!"
+            "ahdknc sjskdSF76?!"
     })
     void validPassword(String password) {
-        //assertDoesNotThrow(validator::validate);
+        assertDoesNotThrow(() -> validator.validate(password));
     }
 }
